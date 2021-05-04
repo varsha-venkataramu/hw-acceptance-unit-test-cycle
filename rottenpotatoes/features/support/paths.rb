@@ -13,6 +13,17 @@ module NavigationHelpers
   def path_to(page_name)
     case page_name
 
+    when /^the (.*) page for "(.*)"$/
+      # puts($1)
+      movie = Movie.find_by(title: $2)
+
+      case $1
+      when 'edit'
+        edit_movie_path(movie.id)
+      when 'details'
+        movie_path(movie)
+      end
+
     when /^the (RottenPotatoes )?home\s?page$/ then '/movies'
 
     # Add more mappings here.
