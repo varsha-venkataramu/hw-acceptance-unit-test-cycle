@@ -7,7 +7,33 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+
+    @sort = params[:sort] || session[:sort]
+    @all_ratings = Movie.ratings
+    @ratings =  params[:ratings] || session[:ratings] || Hash[@all_ratings.map {|rating| [rating, rating]}]
+    @movies = Movie.where(rating:@ratings.keys).order(@sort)
+    
+    if params[:sort]!=session[:sort] or params[:ratings]!=session[:ratings]
+      session[:sort] = @sort
+      session[:ratings] = @ratings
+      flash.keep
+      redirect_to movies_path(sort: session[:sort],ratings:session[:ratings])
+    end
+    
+  end
+  
+  def search
+    # puts(pus)
+    @movies = Movie.search_by_director(params[:title])
+    if @movies.nil?
+      # puts "Nulll"
+      redirect_to root_url, alert: "'#{params[:title]}' has no director info"
+    end 
+
+    @movie = Movie.find_by(title: params[:title])
+    # puts("hell-" , @movies.inspect)
+    # Movie.all
+    # redirect_to movies_path(@movies)
   end
 
   def new
