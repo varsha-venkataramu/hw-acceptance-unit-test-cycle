@@ -1,5 +1,4 @@
 class Movie < ActiveRecord::Base
-    
     def self.search_by_director title
         director = Movie.find_by(title: title).director
         if director.blank? or director.nil?
@@ -9,8 +8,7 @@ class Movie < ActiveRecord::Base
         return Movie.where(director: director).to_a
     end
     
-    def self.ratings()
-        val=Movie.all.distinct.pluck('rating')
-        return val
+    def self.all_ratings
+        %w(G PG PG-13 NC-17 R)
     end
 end
